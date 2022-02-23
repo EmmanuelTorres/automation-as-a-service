@@ -65,6 +65,7 @@ func main() {
 	router.DELETE("/country/:name", microService.DeleteCountry)
 
 	// Project
+	router.GET("/project/:name", microService.GetProject)
 	router.POST("/project", microService.CreateProject)
 
 	router.Run("localhost:8081")

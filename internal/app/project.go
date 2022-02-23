@@ -32,3 +32,15 @@ func (m *MicroserviceServer) CreateProject(c *gin.Context) {
 
 	c.IndentedJSON(http.StatusCreated, gin.H{"id": projectID})
 }
+
+func (m *MicroserviceServer) GetProject(c *gin.Context) {
+	name := c.Param("name")
+	project, err := m.projectService.GetProject(name)
+	if err != nil {
+		log.Printf("Could not get project %s due to %v", name, err)
+		c.AbortWithError(http.StatusNotFound, err)
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, project)
+}
