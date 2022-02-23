@@ -8,7 +8,11 @@ CREATE TABLE person(
 	role varchar
 );
 
--- Automation As A Service
+-- Automation as a Service
+CREATE TABLE project(
+	id bigserial primary key,
+	name varchar not null
+);
 
 -- Clothing
 CREATE TABLE country(

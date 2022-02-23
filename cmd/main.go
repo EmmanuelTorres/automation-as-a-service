@@ -40,11 +40,13 @@ func main() {
 	dao := repository.NewDAO(db)
 	authService := service.NewAuthService(dao, tokenManager)
 	countryService := service.NewCountryService(dao)
+	projectService := service.NewProjectService(dao)
 	userService := service.NewUserService(dao)
 
 	microService := app.NewMicroService(
 		authService,
 		countryService,
+		projectService,
 		tokenManager,
 		userService,
 	)
@@ -61,6 +63,9 @@ func main() {
 	router.GET("/country/:name", microService.GetCountry)
 	router.POST("/country", microService.CreateCountry)
 	router.DELETE("/country/:name", microService.DeleteCountry)
+
+	// Project
+	router.POST("/project", microService.CreateProject)
 
 	router.Run("localhost:8081")
 }

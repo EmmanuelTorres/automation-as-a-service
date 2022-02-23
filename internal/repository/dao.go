@@ -13,6 +13,7 @@ import (
 type DAO interface {
 	NewUserQuery() UserQuery
 	NewCountryQuery() CountryQuery
+	NewProjectQuery() ProjectQuery
 }
 
 type dao struct{}
@@ -58,6 +59,6 @@ func (d *dao) NewCountryQuery() CountryQuery {
 	return &countryQuery{}
 }
 
-// func (d *dao) NewProjectQuery() ProjectQuery {
-// 	return &projectQuery{}
-// }
+func (d *dao) NewProjectQuery() ProjectQuery {
+	return &projectQuery{}
+}
