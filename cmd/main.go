@@ -13,7 +13,7 @@ import (
 func main() {
 	log.SetFlags(log.Ldate | log.Ltime | log.Lmicroseconds | log.Llongfile)
 
-	// DB
+	// Postgres
 	db, err := repository.NewDB()
 	if err != nil {
 		log.Fatalln(err.Error())
@@ -24,7 +24,7 @@ func main() {
 		log.Fatalf("cannot ping db: %v", err)
 	}
 
-	// preparing config file
+	// Prepare config file
 	viper.AddConfigPath("../config")
 	viper.SetConfigName("config")
 	err = viper.ReadInConfig()
@@ -53,22 +53,24 @@ func main() {
 
 	router := gin.Default()
 
-	// User
-	router.GET("/user/:id", microService.GetUser)
-	router.POST("/user", microService.CreateUser)
-	router.DELETE("/user/:id", microService.DeleteUser)
-	router.POST("/login", microService.Login)
+	publicRoute := router.Group("/api/v1")
 
-	// Country
-	router.GET("/country/:name", microService.GetCountry)
-	router.POST("/country", microService.CreateCountry)
-	router.DELETE("/country/:name", microService.DeleteCountry)
+	userRoute := publicRoute.Group("/users")
+	userRoute.Use(microService.AuthorizeUser())
+	userRoute.GET("/:id", microService.GetUser)
+	userRoute.POST("/", microService.CreateUser)
+	userRoute.DELETE("/:id", microService.DeleteUser)
 
-	// Project
-	router.GET("/project/:name", microService.GetProject)
-	router.POST("/project", microService.CreateProject)
-	router.PUT("/project/:id", microService.UpdateProject)
-	router.DELETE("/project/:id", microService.DeleteProject)
+	loginRoute := publicRoute.Group("/login")
+	loginRoute.POST("/", microService.Login)
+
+	projectRoute := publicRoute.Group("/projects")
+	projectRoute.GET("/:name", microService.GetProject)
+	projectRoute.POST("", microService.CreateProject)
+	projectRoute.PUT("/:id", microService.UpdateProject)
+	projectRoute.DELETE("/:id", microService.DeleteProject)
+
+	// router.Use(microService.AuthorizeUser())
 
 	router.Run("localhost:8081")
 }

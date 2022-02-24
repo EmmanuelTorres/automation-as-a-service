@@ -12,7 +12,7 @@ type ProjectService interface {
 	CreateProject(project datastruct.Project, userID int64) (*int64, error)
 	GetProject(name string) (*datastruct.Project, error)
 	UpdateProject(project dto.Project) (*datastruct.Project, error)
-	DeleteProject(id, userID int64) error
+	DeleteProject(id int64, user *datastruct.Person) error
 }
 
 type projectService struct {
@@ -60,14 +60,8 @@ func (p *projectService) UpdateProject(project dto.Project) (*datastruct.Project
 	return updatedProject, nil
 }
 
-func (p *projectService) DeleteProject(id, userID int64) error {
-	// Retrieve the user
-	user, err := p.dao.NewUserQuery().GetUser(userID)
-	if err != nil {
-		return err
-	}
-
-	// Only admins can delete projects
+func (p *projectService) DeleteProject(id int64, user *datastruct.Person) error {
+	// Verify the person deleting the project is an admin
 	if user.Role == datastruct.ADMIN {
 		// Delete the project
 		err := p.dao.NewProjectQuery().DeleteProject(id)

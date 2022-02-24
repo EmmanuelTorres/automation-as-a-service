@@ -92,15 +92,9 @@ func (m *MicroserviceServer) DeleteProject(c *gin.Context) {
 		return
 	}
 
-	auth := c.Request.Header.Get("Authorization")
-	userID, err := m.getUserIdFromToken(auth)
-	if err != nil {
-		log.Printf("Could not read User ID from Authorization header %s due to %v\n", auth, err)
-		c.AbortWithError(http.StatusUnauthorized, err)
-		return
-	}
+	authorizedUser := c.MustGet("user").(*datastruct.Person)
 
-	err = m.projectService.DeleteProject(paramID, userID)
+	err = m.projectService.DeleteProject(paramID, authorizedUser)
 	if err != nil {
 		log.Printf("Could not delete project %d due to %v", paramID, err)
 		c.AbortWithError(http.StatusInternalServerError, err)

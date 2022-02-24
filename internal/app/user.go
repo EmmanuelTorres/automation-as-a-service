@@ -12,6 +12,9 @@ import (
 
 // Gets a user from the database
 func (m *MicroserviceServer) GetUser(c *gin.Context) {
+	// Parse the user from the middleware
+	tokenUser := c.MustGet("user").(*datastruct.Person)
+
 	// Parse the userID from the token
 	auth := c.Request.Header.Get("Authorization")
 	tokenID, err := m.getUserIdFromToken(auth)

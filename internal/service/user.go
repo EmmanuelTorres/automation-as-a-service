@@ -11,6 +11,7 @@ import (
 
 type UserService interface {
 	GetUser(requestedUserID int64, userID int64) (*datastruct.Person, error)
+	GetUserSingle(userID int64) (*datastruct.Person, error)
 	DeleteUser(id int64, userID int64) error
 	UpdateUser(person dto.Person) (*datastruct.Person, error)
 }
@@ -21,6 +22,15 @@ type userService struct {
 
 func NewUserService(dao repository.DAO) UserService {
 	return &userService{dao: dao}
+}
+
+func (u *userService) GetUserSingle(userID int64) (*datastruct.Person, error) {
+	user, err := u.dao.NewUserQuery().GetUser(userID)
+	if err != nil {
+		log.Printf("User does not exist")
+		return nil, err
+	}
+	return &datastruct.Person{ID: user.ID, Role: user.Role}, nil
 }
 
 func (u *userService) GetUser(requestedUserID int64, userID int64) (*datastruct.Person, error) {
