@@ -67,6 +67,8 @@ func main() {
 	// Project
 	router.GET("/project/:name", microService.GetProject)
 	router.POST("/project", microService.CreateProject)
+	router.PUT("/project/:id", microService.UpdateProject)
+	router.DELETE("/project/:id", microService.DeleteProject)
 
 	router.Run("localhost:8081")
 }
