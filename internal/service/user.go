@@ -10,9 +10,10 @@ import (
 )
 
 type UserService interface {
-	GetUser(requestedUserID int64, userID int64) (*datastruct.Person, error)
+	GetUsers() ([]datastruct.Person, error)
+	GetUser(requestedUserID int64, user *datastruct.Person) (*datastruct.Person, error)
 	GetUserSingle(userID int64) (*datastruct.Person, error)
-	DeleteUser(id int64, userID int64) error
+	DeleteUser(id int64, user *datastruct.Person) error
 	UpdateUser(person dto.Person) (*datastruct.Person, error)
 }
 
@@ -24,6 +25,27 @@ func NewUserService(dao repository.DAO) UserService {
 	return &userService{dao: dao}
 }
 
+func (u *userService) GetUsers() ([]datastruct.Person, error) {
+	users, err := u.dao.NewUserQuery().GetUsers()
+	if err != nil {
+		return nil, err
+	}
+	return users, nil
+}
+
+func (u *userService) GetUser(requestedUserID int64, user *datastruct.Person) (*datastruct.Person, error) {
+	requestedUser, err := u.dao.NewUserQuery().GetUser(requestedUserID)
+	if err != nil {
+		return nil, err
+	}
+
+	if user.ID == requestedUser.ID || user.Role == datastruct.ADMIN {
+		return requestedUser, nil
+	} else {
+		return &datastruct.Person{ID: requestedUser.ID, FirstName: requestedUser.FirstName, LastName: requestedUser.LastName}, nil
+	}
+}
+
 func (u *userService) GetUserSingle(userID int64) (*datastruct.Person, error) {
 	user, err := u.dao.NewUserQuery().GetUser(userID)
 	if err != nil {
@@ -33,35 +55,9 @@ func (u *userService) GetUserSingle(userID int64) (*datastruct.Person, error) {
 	return &datastruct.Person{ID: user.ID, Role: user.Role}, nil
 }
 
-func (u *userService) GetUser(requestedUserID int64, userID int64) (*datastruct.Person, error) {
-	var userBySession *datastruct.Person
-	var err error
-
-	userBySession, err = u.dao.NewUserQuery().GetUser(userID)
-	if err != nil {
-		log.Printf("user isn't authorized %v", err)
-	}
-
-	userByRequest, err := u.dao.NewUserQuery().GetUser(requestedUserID)
-	if err != nil {
-		return nil, err
-	}
-
-	if userByRequest.ID == userBySession.ID || userBySession.Role == datastruct.ADMIN {
-		return userByRequest, nil
-	} else {
-		return &datastruct.Person{ID: userByRequest.ID, FirstName: userByRequest.FirstName, LastName: userByRequest.LastName}, nil
-	}
-}
-
-func (u *userService) DeleteUser(id int64, userID int64) error {
-	user, err := u.dao.NewUserQuery().GetUser(userID)
-	if err != nil {
-		return err
-	}
-
-	if user.Role == datastruct.ADMIN || id == user.ID {
-		err = u.dao.NewUserQuery().DeleteUser(id)
+func (u *userService) DeleteUser(id int64, user *datastruct.Person) error {
+	if user.ID == id || user.Role == datastruct.ADMIN {
+		err := u.dao.NewUserQuery().DeleteUser(id)
 		if err != nil {
 			return err
 		}

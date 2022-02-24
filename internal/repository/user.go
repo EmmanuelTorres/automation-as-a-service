@@ -11,6 +11,7 @@ import (
 type UserQuery interface {
 	CreateUser(user datastruct.Person) (*int64, error)
 	GetUser(id int64) (*datastruct.Person, error)
+	GetUsers() ([]datastruct.Person, error)
 	DeleteUser(userID int64) error
 	UpdateUser(person dto.Person) (*datastruct.Person, error)
 	GetUserPasswordByEmail(email string) (*string, error)
@@ -46,6 +47,29 @@ func (u *userQuery) GetUser(id int64) (*datastruct.Person, error) {
 		return nil, err
 	}
 	return &user, err
+}
+
+func (u *userQuery) GetUsers() ([]datastruct.Person, error) {
+	qb := pgQb().
+		Select("id", "first_name", "last_name", "email", "password", "phone_number", "role").
+		From(datastruct.PersonTableName)
+
+	rows, err := qb.Query()
+	if err != nil {
+		return nil, err
+	}
+
+	var users []datastruct.Person
+	var user datastruct.Person
+	for rows.Next() {
+		err = rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Email, &user.Password, &user.PhoneNumber, &user.Role)
+		if err != nil {
+			return nil, err
+		}
+
+		users = append(users, user)
+	}
+	return users, nil
 }
 
 func (u *userQuery) DeleteUser(userID int64) error {

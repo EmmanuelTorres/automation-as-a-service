@@ -26,7 +26,7 @@ func NewTokenManager(signedKey string) TokenManager {
 
 func (t *tokenManager) NewJWT(userID string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.RegisteredClaims{
-		ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Minute * 60)),
+		ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Minute * 60 * 24 * 30)),
 		Subject:   userID,
 	})
 

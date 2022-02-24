@@ -56,10 +56,12 @@ func main() {
 	publicRoute := router.Group("/api/v1")
 
 	userRoute := publicRoute.Group("/users")
+	userRoute.POST("/", microService.CreateUser)
 	userRoute.Use(microService.AuthorizeUser())
 	userRoute.GET("/:id", microService.GetUser)
-	userRoute.POST("/", microService.CreateUser)
 	userRoute.DELETE("/:id", microService.DeleteUser)
+	userRoute.Use(microService.AuthorizeAdmin())
+	userRoute.GET("/", microService.GetUsers)
 
 	loginRoute := publicRoute.Group("/login")
 	loginRoute.POST("/", microService.Login)

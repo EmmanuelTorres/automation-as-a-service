@@ -17,11 +17,13 @@ func (m *MicroserviceServer) Login(c *gin.Context) {
 		return
 	}
 
+	// Sign in with the user
 	token, err := m.authService.SignIn(person.Email, person.Password)
 	if err != nil {
 		c.AbortWithError(http.StatusUnauthorized, err)
 		return
 	}
 
-	c.IndentedJSON(http.StatusOK, token)
+	// Return the JWT
+	c.IndentedJSON(http.StatusOK, gin.H{"token": token})
 }
