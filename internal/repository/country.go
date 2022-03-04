@@ -11,7 +11,7 @@ type CountryQuery interface {
 	GetCountry(id int64) (*datastruct.Country, error)
 	GetCountryByName(name string) (*datastruct.Country, error)
 	UpdateCountry(country dto.Country) (*datastruct.Country, error)
-	DeleteCountry(name string) error
+	DeleteCountry(id int64) error
 }
 
 type countryQuery struct{}
@@ -77,11 +77,11 @@ func (c *countryQuery) UpdateCountry(country dto.Country) (*datastruct.Country, 
 	return &updatedCountry, nil
 }
 
-func (c *countryQuery) DeleteCountry(name string) error {
+func (c *countryQuery) DeleteCountry(id int64) error {
 	qb := pgQb().
 		Delete(datastruct.CountryTableName).
 		From(datastruct.CountryTableName).
-		Where(squirrel.Eq{"name": name})
+		Where(squirrel.Eq{"id": id})
 
 	_, err := qb.Exec()
 	if err != nil {
