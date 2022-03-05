@@ -11,9 +11,10 @@ import (
 )
 
 type DAO interface {
-	NewUserQuery() UserQuery
 	NewCountryQuery() CountryQuery
+	NewDesignerQuery() DesignerQuery
 	NewProjectQuery() ProjectQuery
+	NewUserQuery() UserQuery
 }
 
 type dao struct{}
@@ -51,14 +52,18 @@ func NewDB() (*sql.DB, error) {
 	return DB, nil
 }
 
-func (d *dao) NewUserQuery() UserQuery {
-	return &userQuery{}
-}
-
 func (d *dao) NewCountryQuery() CountryQuery {
 	return &countryQuery{}
 }
 
+func (d *dao) NewDesignerQuery() DesignerQuery {
+	return &designerQuery{}
+}
+
 func (d *dao) NewProjectQuery() ProjectQuery {
 	return &projectQuery{}
+}
+
+func (d *dao) NewUserQuery() UserQuery {
+	return &userQuery{}
 }

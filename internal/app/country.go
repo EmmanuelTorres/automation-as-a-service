@@ -14,7 +14,7 @@ func (m *MicroserviceServer) CreateCountry(c *gin.Context) {
 	// Parse the country from the request body
 	var country dto.Country
 	if err := c.BindJSON(&country); err != nil {
-		log.Printf("Could not bind request body to person due to %v", err)
+		log.Printf("Could not bind request body to country due to %v", err)
 		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
@@ -36,7 +36,7 @@ func (m *MicroserviceServer) GetCountry(c *gin.Context) {
 	stringID := c.Param("id")
 	requestID, err := strconv.ParseInt(stringID, 10, 64)
 	if err != nil {
-		log.Printf("Could not convert param %s to int64 due to %v\n", stringID, err)
+		log.Printf("Could not convert param %s to int64 due to %v", stringID, err)
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
@@ -67,7 +67,7 @@ func (m *MicroserviceServer) UpdateCountry(c *gin.Context) {
 	// Parse the country from the request body
 	var country dto.Country
 	if err := c.BindJSON(&country); err != nil {
-		log.Printf("Could not bind request body to person due to %v", err)
+		log.Printf("Could not bind request body to country due to %v", err)
 		c.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
@@ -81,7 +81,7 @@ func (m *MicroserviceServer) UpdateCountry(c *gin.Context) {
 		return
 	}
 
-	// Return the new country ID
+	// Return the updated country
 	c.IndentedJSON(http.StatusCreated, updatedCountry)
 }
 

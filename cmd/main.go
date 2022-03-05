@@ -40,12 +40,14 @@ func main() {
 	dao := repository.NewDAO(db)
 	authService := service.NewAuthService(dao, tokenManager)
 	countryService := service.NewCountryService(dao)
+	designerService := service.NewDesignerService(dao)
 	projectService := service.NewProjectService(dao)
 	userService := service.NewUserService(dao)
 
 	microService := app.NewMicroService(
 		authService,
 		countryService,
+		designerService,
 		projectService,
 		tokenManager,
 		userService,
@@ -66,13 +68,21 @@ func main() {
 	loginRoute := publicRoute.Group("/login")
 	loginRoute.POST("/", microService.Login)
 
-	projectRoute := publicRoute.Group("/projects")
-	projectRoute.GET("/:name", microService.GetProject)
-	projectRoute.POST("", microService.CreateProject)
-	projectRoute.PUT("/:id", microService.UpdateProject)
-	projectRoute.DELETE("/:id", microService.DeleteProject)
+	countryRoute := publicRoute.Group("/countries")
+	countryRoute.Use(microService.AuthorizeUser())
+	countryRoute.GET("/:id", microService.GetCountry)
+	countryRoute.Use(microService.AuthorizeAdmin())
+	countryRoute.PUT("/:id", microService.UpdateCountry)
+	countryRoute.POST("/", microService.CreateCountry)
+	countryRoute.DELETE("/:id", microService.DeleteCountry)
 
-	// router.Use(microService.AuthorizeUser())
+	designerRoute := publicRoute.Group("/designers")
+	designerRoute.Use(microService.AuthorizeUser())
+	designerRoute.GET("/:id", microService.GetDesigner)
+	designerRoute.Use(microService.AuthorizeAdmin())
+	designerRoute.PUT("/:id", microService.UpdateDesigner)
+	designerRoute.POST("/", microService.CreateDesigner)
+	designerRoute.DELETE("/:id", microService.DeleteDesigner)
 
 	router.Run("localhost:8081")
 }
