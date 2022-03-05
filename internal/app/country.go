@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/automation-as-a-service/internal/datastruct"
 	"github.com/automation-as-a-service/internal/dto"
 	"github.com/gin-gonic/gin"
 )
@@ -13,7 +12,7 @@ import (
 // Inserts a country into the database
 func (m *MicroserviceServer) CreateCountry(c *gin.Context) {
 	// Parse the country from the request body
-	var country datastruct.Country
+	var country dto.Country
 	if err := c.BindJSON(&country); err != nil {
 		log.Printf("Could not bind request body to person due to %v", err)
 		c.AbortWithError(http.StatusBadRequest, err)
