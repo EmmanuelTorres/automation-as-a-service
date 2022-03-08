@@ -14,6 +14,7 @@ type DAO interface {
 	NewBrandQuery() BrandQuery
 	NewCountryQuery() CountryQuery
 	NewDesignerQuery() DesignerQuery
+	NewGarmentQuery() GarmentQuery
 	NewProjectQuery() ProjectQuery
 	NewUserQuery() UserQuery
 }
@@ -63,6 +64,10 @@ func (d *dao) NewCountryQuery() CountryQuery {
 
 func (d *dao) NewDesignerQuery() DesignerQuery {
 	return &designerQuery{}
+}
+
+func (d *dao) NewGarmentQuery() GarmentQuery {
+	return &garmentQuery{}
 }
 
 func (d *dao) NewProjectQuery() ProjectQuery {

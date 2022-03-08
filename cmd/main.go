@@ -42,6 +42,7 @@ func main() {
 	brandService := service.NewBrandService(dao)
 	countryService := service.NewCountryService(dao)
 	designerService := service.NewDesignerService(dao)
+	garmentService := service.NewGarmentService(dao)
 	projectService := service.NewProjectService(dao)
 	userService := service.NewUserService(dao)
 
@@ -50,6 +51,7 @@ func main() {
 		brandService,
 		countryService,
 		designerService,
+		garmentService,
 		projectService,
 		tokenManager,
 		userService,
@@ -93,6 +95,14 @@ func main() {
 	brandRoute.PUT("/:id", microService.UpdateBrand)
 	brandRoute.POST("/", microService.CreateBrand)
 	brandRoute.DELETE("/:id", microService.DeleteBrand)
+
+	garmentRoute := publicRoute.Group("/garments")
+	garmentRoute.Use(microService.AuthorizeUser())
+	garmentRoute.GET("/:id", microService.GetGarment)
+	garmentRoute.Use(microService.AuthorizeAdmin())
+	garmentRoute.PUT("/:id", microService.UpdateGarment)
+	garmentRoute.POST("/", microService.CreateGarment)
+	garmentRoute.DELETE("/:id", microService.DeleteGarment)
 
 	router.Run("localhost:8081")
 }
