@@ -68,7 +68,7 @@ func (d *designerQuery) UpdateDesigner(designer dto.Designer) (*datastruct.Desig
 			"country_id": designer.CountryID,
 		}).
 		Where(squirrel.Eq{"id": designer.ID}).
-		Suffix("RETURNING id, name")
+		Suffix("RETURNING id, name, country_id")
 
 	var updatedDesigner datastruct.Designer
 	err := qb.QueryRow().Scan(&updatedDesigner.ID, &updatedDesigner.Name, &updatedDesigner.CountryID)
