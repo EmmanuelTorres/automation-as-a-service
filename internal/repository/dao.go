@@ -11,6 +11,7 @@ import (
 )
 
 type DAO interface {
+	NewBrandQuery() BrandQuery
 	NewCountryQuery() CountryQuery
 	NewDesignerQuery() DesignerQuery
 	NewProjectQuery() ProjectQuery
@@ -50,6 +51,10 @@ func NewDB() (*sql.DB, error) {
 		return nil, err
 	}
 	return DB, nil
+}
+
+func (d *dao) NewBrandQuery() BrandQuery {
+	return &brandQuery{}
 }
 
 func (d *dao) NewCountryQuery() CountryQuery {

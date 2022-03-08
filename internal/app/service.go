@@ -4,6 +4,7 @@ import "github.com/automation-as-a-service/internal/service"
 
 type MicroserviceServer struct {
 	authService     service.AuthService
+	brandService    service.BrandService
 	countryService  service.CountryService
 	designerService service.DesignerService
 	projectService  service.ProjectService
@@ -13,6 +14,7 @@ type MicroserviceServer struct {
 
 func NewMicroService(
 	authService service.AuthService,
+	brandService service.BrandService,
 	countryService service.CountryService,
 	designerService service.DesignerService,
 	projectService service.ProjectService,
@@ -21,6 +23,7 @@ func NewMicroService(
 ) *MicroserviceServer {
 	return &MicroserviceServer{
 		authService:     authService,
+		brandService:    brandService,
 		countryService:  countryService,
 		designerService: designerService,
 		projectService:  projectService,

@@ -39,6 +39,7 @@ func main() {
 	// Register all services
 	dao := repository.NewDAO(db)
 	authService := service.NewAuthService(dao, tokenManager)
+	brandService := service.NewBrandService(dao)
 	countryService := service.NewCountryService(dao)
 	designerService := service.NewDesignerService(dao)
 	projectService := service.NewProjectService(dao)
@@ -46,6 +47,7 @@ func main() {
 
 	microService := app.NewMicroService(
 		authService,
+		brandService,
 		countryService,
 		designerService,
 		projectService,
@@ -83,6 +85,14 @@ func main() {
 	designerRoute.PUT("/:id", microService.UpdateDesigner)
 	designerRoute.POST("/", microService.CreateDesigner)
 	designerRoute.DELETE("/:id", microService.DeleteDesigner)
+
+	brandRoute := publicRoute.Group("/brands")
+	brandRoute.Use(microService.AuthorizeUser())
+	brandRoute.GET("/:id", microService.GetBrand)
+	brandRoute.Use(microService.AuthorizeAdmin())
+	brandRoute.PUT("/:id", microService.UpdateBrand)
+	brandRoute.POST("/", microService.CreateBrand)
+	brandRoute.DELETE("/:id", microService.DeleteBrand)
 
 	router.Run("localhost:8081")
 }
