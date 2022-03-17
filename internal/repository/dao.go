@@ -3,7 +3,6 @@ package repository
 import (
 	"database/sql"
 	"fmt"
-	"log"
 
 	"github.com/Masterminds/squirrel"
 	_ "github.com/lib/pq"
@@ -32,13 +31,9 @@ func NewDAO(db *sql.DB) DAO {
 	return &dao{}
 }
 
+// Creates a new Database instance. The configs should have already been read in with
+// Viper by the time this is called.
 func NewDB() (*sql.DB, error) {
-	viper.AddConfigPath(".")
-	viper.SetConfigName("config")
-	err := viper.ReadInConfig()
-	if err != nil {
-		log.Fatalln("cannot read from a config")
-	}
 	host := viper.Get("database.host").(string)
 	port := viper.Get("database.port").(int)
 	user := viper.Get("database.user").(string)
@@ -47,7 +42,7 @@ func NewDB() (*sql.DB, error) {
 
 	// Starting a database
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s dbname=%s password=%s sslmode=disable", host, port, user, dbname, password)
-	DB, err = sql.Open("postgres", psqlInfo)
+	DB, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
 		return nil, err
 	}

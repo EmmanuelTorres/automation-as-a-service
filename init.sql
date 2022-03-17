@@ -11,7 +11,8 @@ CREATE TABLE person(
 -- Automation as a Service
 CREATE TABLE project(
 	id bigserial primary key,
-	name varchar not null unique
+	repository varchar not null unique,
+	branch varchar not null unique
 );
 
 -- Clothing
