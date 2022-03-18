@@ -1,14 +1,11 @@
 CREATE TABLE person(
 	id bigserial primary key,
-	first_name varchar not null,
-	last_name varchar not null,
+	username varchar not null unique,
 	email varchar not null unique,
 	password varchar not null,
-	phone_number varchar,
 	role varchar not null
 );
 
--- Clothing
 CREATE TABLE country(
 	id bigserial primary key,
 	name varchar not null unique

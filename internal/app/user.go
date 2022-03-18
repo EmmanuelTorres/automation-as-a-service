@@ -9,6 +9,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// swagger:route GET /users users GetUsers
+// Return a list of users from the database
+// responses:
+//	200: usersResponse
+
 // Gets all users from the database
 func (m *MicroserviceServer) GetUsers(c *gin.Context) {
 	// Retrieve the users from the database
@@ -23,13 +28,18 @@ func (m *MicroserviceServer) GetUsers(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, gin.H{"users": users})
 }
 
+// swagger:route GET /users/{username} users GetUser
+// Returns a single user from the database
+// responses:
+//	200: userResponse
+
 // Gets a user from the database
 func (m *MicroserviceServer) GetUser(c *gin.Context) {
 	// Retrieve the user from the middleware
-	tokenUser := c.MustGet("user").(*datastruct.Person)
+	tokenUser := c.MustGet(USER_KEY).(*datastruct.Person)
 
 	// Parse the user ID from the request
-	stringID := c.Param("id")
+	stringID := c.Param("username")
 	requestID, err := strconv.ParseInt(stringID, 10, 64)
 	if err != nil {
 		log.Printf("Could not convert param %s to int64 due to %v\n", stringID, err)
@@ -48,6 +58,11 @@ func (m *MicroserviceServer) GetUser(c *gin.Context) {
 	// Return the requested user
 	c.IndentedJSON(http.StatusOK, gin.H{"user": user})
 }
+
+// swagger:route POST /users/{username} users CreateUser
+// Returns the id of a newly created user
+// responses:
+//	201: objectCreatedResponse
 
 // Creates a user in the database
 func (m *MicroserviceServer) CreateUser(c *gin.Context) {
@@ -70,6 +85,11 @@ func (m *MicroserviceServer) CreateUser(c *gin.Context) {
 	// Return the new user ID
 	c.IndentedJSON(http.StatusCreated, gin.H{"id": id})
 }
+
+// swagger:route DELETE /users/{username} users DeleteUser
+// Deletes the user from the database
+// responses:
+//	204: noContentResponse
 
 // Deletes a user from the database
 func (m *MicroserviceServer) DeleteUser(c *gin.Context) {

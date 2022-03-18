@@ -23,8 +23,8 @@ type userQuery struct{}
 func (u *userQuery) CreateUser(user datastruct.Person) (*int64, error) {
 	qb := pgQb().
 		Insert(datastruct.PersonTableName).
-		Columns("first_name", "last_name", "email", "password", "phone_number", "role").
-		Values(user.FirstName, user.LastName, user.Email, user.Password, user.PhoneNumber, user.Role).
+		Columns("username", "email", "password", "role").
+		Values(user.Username, user.Email, user.Password, user.Role).
 		Suffix("RETURNING id")
 
 	var id int64
@@ -37,12 +37,12 @@ func (u *userQuery) CreateUser(user datastruct.Person) (*int64, error) {
 
 func (u *userQuery) GetUser(id int64) (*datastruct.Person, error) {
 	qb := pgQb().
-		Select("id", "first_name", "last_name", "email", "password", "phone_number", "role").
+		Select("id", "username", "email", "password", "role").
 		From(datastruct.PersonTableName).
 		Where(squirrel.Eq{"id": id})
 
 	user := datastruct.Person{}
-	err := qb.QueryRow().Scan(&user.ID, &user.FirstName, &user.LastName, &user.Email, &user.Password, &user.PhoneNumber, &user.Role)
+	err := qb.QueryRow().Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.Role)
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +51,7 @@ func (u *userQuery) GetUser(id int64) (*datastruct.Person, error) {
 
 func (u *userQuery) GetUsers() ([]datastruct.Person, error) {
 	qb := pgQb().
-		Select("id", "first_name", "last_name", "email", "password", "phone_number", "role").
+		Select("id", "username", "email", "password", "role").
 		From(datastruct.PersonTableName)
 
 	rows, err := qb.Query()
@@ -62,7 +62,7 @@ func (u *userQuery) GetUsers() ([]datastruct.Person, error) {
 	var users []datastruct.Person
 	var user datastruct.Person
 	for rows.Next() {
-		err = rows.Scan(&user.ID, &user.FirstName, &user.LastName, &user.Email, &user.Password, &user.PhoneNumber, &user.Role)
+		err = rows.Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.Role)
 		if err != nil {
 			return nil, err
 		}
@@ -89,16 +89,14 @@ func (u *userQuery) UpdateUser(person dto.Person) (*datastruct.Person, error) {
 	qb := pgQb().
 		Update(datastruct.PersonTableName).
 		SetMap(map[string]interface{}{
-			"first_name":   person.FirstName,
-			"last_name":    person.LastName,
-			"email":        person.Email,
-			"phone_number": person.PhoneNumber,
+			"username": person.Username,
+			"email":    person.Email,
 		}).
 		Where(squirrel.Eq{"id": person.ID}).
-		Suffix("RETURNING id, first_name, last_name, email, phone_number")
+		Suffix("RETURNING id, username, email")
 
 	var updatedPerson datastruct.Person
-	err := qb.QueryRow().Scan(&updatedPerson.ID, &updatedPerson.FirstName, &updatedPerson.LastName, &updatedPerson.Email, &updatedPerson.PhoneNumber)
+	err := qb.QueryRow().Scan(&updatedPerson.ID, &updatedPerson.Email)
 	if err != nil {
 		return nil, err
 	}

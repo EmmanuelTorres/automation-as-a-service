@@ -61,7 +61,7 @@ func main() {
 	userRoute := publicRoute.Group("/users")
 	userRoute.POST("/", microService.CreateUser)
 	userRoute.Use(microService.AuthorizeUser())
-	userRoute.GET("/:id", microService.GetUser)
+	userRoute.GET("/:username", microService.GetUser)
 	userRoute.DELETE("/:id", microService.DeleteUser)
 	userRoute.Use(microService.AuthorizeAdmin())
 	userRoute.GET("/", microService.GetUsers)

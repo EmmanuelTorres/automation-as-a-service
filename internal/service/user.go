@@ -42,7 +42,7 @@ func (u *userService) GetUser(requestedUserID int64, user *datastruct.Person) (*
 	if user.ID == requestedUser.ID || user.Role == datastruct.ADMIN {
 		return requestedUser, nil
 	} else {
-		return &datastruct.Person{ID: requestedUser.ID, FirstName: requestedUser.FirstName, LastName: requestedUser.LastName}, nil
+		return &datastruct.Person{ID: requestedUser.ID}, nil
 	}
 }
 
