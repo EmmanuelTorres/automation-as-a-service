@@ -13,6 +13,14 @@ import (
 func main() {
 	log.SetFlags(log.Ldate | log.Ltime | log.Lmicroseconds | log.Llongfile)
 
+	// Prepare config file
+	viper.AddConfigPath("./")
+	viper.SetConfigName("config")
+	err := viper.ReadInConfig()
+	if err != nil {
+		log.Fatalln("cannot read from a config")
+	}
+
 	// Postgres
 	db, err := repository.NewDB()
 	if err != nil {
@@ -23,15 +31,6 @@ func main() {
 	if err != nil {
 		log.Fatalf("cannot ping db: %v", err)
 	}
-
-	// Prepare config file
-	viper.AddConfigPath("../config")
-	viper.SetConfigName("config")
-	err = viper.ReadInConfig()
-	if err != nil {
-		log.Fatalln("cannot read from a config")
-	}
-
 	// JWT
 	signedKeyJwt := viper.Get("jwt.signedKey").(string)
 	tokenManager := service.NewTokenManager(signedKeyJwt)
@@ -43,7 +42,6 @@ func main() {
 	countryService := service.NewCountryService(dao)
 	designerService := service.NewDesignerService(dao)
 	garmentService := service.NewGarmentService(dao)
-	projectService := service.NewProjectService(dao)
 	userService := service.NewUserService(dao)
 
 	microService := app.NewMicroService(
@@ -52,7 +50,6 @@ func main() {
 		countryService,
 		designerService,
 		garmentService,
-		projectService,
 		tokenManager,
 		userService,
 	)

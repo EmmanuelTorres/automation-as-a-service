@@ -8,7 +8,6 @@ type MicroserviceServer struct {
 	countryService  service.CountryService
 	designerService service.DesignerService
 	garmentService  service.GarmentService
-	projectService  service.ProjectService
 	tokenManager    service.TokenManager
 	userService     service.UserService
 }
@@ -19,7 +18,6 @@ func NewMicroService(
 	countryService service.CountryService,
 	designerService service.DesignerService,
 	garmentService service.GarmentService,
-	projectService service.ProjectService,
 	tokenManager service.TokenManager,
 	userService service.UserService,
 ) *MicroserviceServer {
@@ -29,7 +27,6 @@ func NewMicroService(
 		countryService:  countryService,
 		designerService: designerService,
 		garmentService:  garmentService,
-		projectService:  projectService,
 		tokenManager:    tokenManager,
 		userService:     userService,
 	}

@@ -112,7 +112,6 @@ func TestMain(m *testing.M) {
 	countryService := service.NewCountryService(dao)
 	designerService := service.NewDesignerService(dao)
 	garmentService := service.NewGarmentService(dao)
-	projectService := service.NewProjectService(dao)
 	userService := service.NewUserService(dao)
 
 	microService = NewMicroService(
@@ -121,7 +120,6 @@ func TestMain(m *testing.M) {
 		countryService,
 		designerService,
 		garmentService,
-		projectService,
 		tokenManager,
 		userService,
 	)

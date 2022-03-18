@@ -8,13 +8,6 @@ CREATE TABLE person(
 	role varchar not null
 );
 
--- Automation as a Service
-CREATE TABLE project(
-	id bigserial primary key,
-	repository varchar not null unique,
-	branch varchar not null unique
-);
-
 -- Clothing
 CREATE TABLE country(
 	id bigserial primary key,
