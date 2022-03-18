@@ -8,6 +8,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const (
+	USER_KEY = "user"
+)
+
 func (m *MicroserviceServer) getUserIdFromToken(token string) (int64, error) {
 	userID, err := m.tokenManager.Parse(token)
 	if err != nil {
@@ -36,7 +40,7 @@ func (m *MicroserviceServer) AuthorizeUser() gin.HandlerFunc {
 			return
 		}
 
-		c.Set("user", user)
+		c.Set(USER_KEY, user)
 		c.Next()
 	}
 }
@@ -66,7 +70,7 @@ func (m *MicroserviceServer) AuthorizeAdmin() gin.HandlerFunc {
 			return
 		}
 
-		c.Set("user", user)
+		c.Set(USER_KEY, user)
 		c.Next()
 	}
 }
